@@ -1,0 +1,11 @@
+node_modules
+*.swp
+src/cli.repl.js
+src/clojure.js
+src/evaluator.js
+src/form.js
+src/forms.js
+src/namespace.js
+src/reader.js
+dist
+.pytest_cache

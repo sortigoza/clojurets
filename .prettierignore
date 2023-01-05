@@ -1,0 +1,17 @@
+**/tests/fixtures/**/*
+!packages/scope-manager/tests/fixtures/**/*
+**/tests/fixture-project/**/*
+**/dist
+**/coverage
+**/shared-fixtures
+**/.vscode
+**/.nyc_output
+**/.vs
+.github
+.all-contributorsrc
+CONTRIBUTORS.md
+CHANGELOG.md
+.next/
+out/
+package-lock.json
+clojure.min.js
