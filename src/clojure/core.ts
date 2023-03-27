@@ -7,7 +7,7 @@ import * as coreIO from './core.io';
 import * as macros from './core.macros';
 import { namespace } from './core.namespace';
 import * as sequences from './core.sequences';
-import { numbers_test } from './core.primitives.numbers.test';
+import { numbers_test } from './core.primitives.numbers.checks';
 import { misc } from './core.misc';
 import { maps } from './core.collections.hash_maps';
 
