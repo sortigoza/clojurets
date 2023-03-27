@@ -7,19 +7,19 @@ describe('Primitives', function () {
   describe('Numbers', function () {
     describe('Arithmetic', function () {
       it('+', function () {
-        clojure.run('(+ 1 2 3)').should.eql(number(6));
+        expect(clojure.run('(+ 1 2 3)')).toEqual(number(6));
       });
       it('-', function () {
-        clojure.run('(- 1 2)').should.eql(number(-1));
+        expect(clojure.run('(- 1 2)')).toEqual(number(-1));
       });
       it('*', function () {
-        clojure.run('(* 2 3)').should.eql(number(6));
+        expect(clojure.run('(* 2 3)')).toEqual(number(6));
       });
       it('/', function () {
-        clojure.run('(/ 6 2)').should.eql(number(3));
+        expect(clojure.run('(/ 6 2)')).toEqual(number(3));
       });
       it('mod', function () {
-        clojure.run('(mod 17 13').should.eql(number(4));
+        expect(clojure.run('(mod 17 13')).toEqual(number(4));
       });
     });
   });

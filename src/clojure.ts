@@ -1,7 +1,7 @@
-import { Reader } from './reader';
 import { evaluator } from './evaluator';
 import { events, EventType } from './events';
 import { Namespace } from './namespace';
+import { Reader } from './reader';
 
 const reader = new Reader();
 

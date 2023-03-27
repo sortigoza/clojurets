@@ -5,17 +5,16 @@ const literal = forms.literal,
   number = forms.number,
   keyword = forms.keyword;
 
-function equals() {
+function equals(...args: any[]): any {
   let isEqual = true,
-    args = Array.prototype.slice.call(arguments, 0),
-    form,
-    nextForm;
+    form: any,
+    nextForm: any;
 
   for (let i = 0; i < args.length - 1; i++) {
     form = args[i];
     nextForm = args[i + 1];
 
-    let stringNumOrKeyword = function (form) {
+    const stringNumOrKeyword = function (form: any) {
       return form.kind === string.kind || form.kind === number.kind || form.kind === keyword.kind;
     };
     if (stringNumOrKeyword(form) || stringNumOrKeyword(nextForm)) {

@@ -1,6 +1,6 @@
-import { Namespace } from './namespace';
-import { forms } from './forms';
 import { events, EventType } from './events';
+import { forms } from './forms';
+import { Namespace } from './namespace';
 
 const number = forms.number,
   string = forms.string,
@@ -216,14 +216,14 @@ function evaluateCall(form, context) {
       context.set(arg.value, args[i]);
     });
 
-    let exprs = func.exprs;
+    const exprs = func.exprs;
 
     // when the function does not have a body, return null
     if (exprs === undefined) {
       return [literal(null), false, context];
     }
 
-    let lastExpression = exprs;
+    const lastExpression = exprs;
 
     // TODO: fix execution of inner expressions
     // let allButLastExpressions = exprs.slice(0, -1);
@@ -329,7 +329,7 @@ function throwLookupError(name, namespace, context) {
 Array.prototype.map =
   Array.prototype.map ||
   function (f) {
-    let result = [];
+    const result = [];
     for (let i = 0; i < this.length; ++i) {
       result.push(f(this[i], i, this));
     }

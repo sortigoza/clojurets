@@ -9,18 +9,18 @@ var list = forms.list,
 describe('Collections', function () {
   describe('Maps', function () {
     it('get', function () {
-      clojure.run('(get {:a 1} :a)').should.eql(number(1));
+      expect(clojure.run('(get {:a 1} :a)')).toEqual(number(1));
     });
     it('keys', function () {
-      clojure.run('(keys {:a 1 :b 2})').should.eql(list(keyword('a'), keyword('b')));
+      expect(clojure.run('(keys {:a 1 :b 2})')).toEqual(list(keyword('a'), keyword('b')));
     });
     it('vals', function () {
-      clojure.run('(vals {:a 1 :b 2})').should.eql(list(number(1), number(2)));
+      expect(clojure.run('(vals {:a 1 :b 2})')).toEqual(list(number(1), number(2)));
     });
     it('hash-map', function () {
       var expList = hash_map(keyword('a'), number(1), keyword('b'), number(2));
       expList.quoted = true;
-      clojure.run('(hash-map :a 1 :b 2)').should.eql(expList);
+      expect(clojure.run('(hash-map :a 1 :b 2)')).toEqual(expList);
     });
   });
 });

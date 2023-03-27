@@ -1,13 +1,13 @@
 export class Form {
-  kind: any;
-  namespace: any;
-  value: any;
-  openChr: any;
-  closeChr: any;
-  terminal: any;
-  quoted: any;
-
-  constructor(kind, namespace, value, openChr, closeChr, terminal, stringifyRep?) {
+  constructor(
+    public kind: any,
+    public namespace: any,
+    public value: any,
+    public openChr = '',
+    public closeChr = '',
+    public terminal = true,
+    public quoted = false
+  ) {
     this.kind = kind;
     this.namespace = namespace;
     this.value = value;
@@ -25,7 +25,7 @@ export class Form {
       value = this.value;
     } else {
       value = this.value
-        .map(function (t) {
+        .map((t: Form) => {
           try {
             return t.stringify();
           } catch (e) {
@@ -35,7 +35,7 @@ export class Form {
         .join(' ');
     }
 
-    return (this.openChr || '') + value + (this.closeChr || '');
+    return `${this.openChr || ''}${value}${this.closeChr || ''}`;
   }
 
   isTerminal() {

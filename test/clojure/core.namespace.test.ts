@@ -1,38 +1,36 @@
-import { Namespace } from '../../src/namespace';
 import { clojure } from '../../src/clojure';
-
-import * as should from 'should';
+import { Namespace } from '../../src/namespace';
 
 describe('Namespace', function () {
   it('ns', function () {
     clojure.run('(ns some-namespace)');
 
-    Namespace.current.name.should.equal('some-namespace');
+    expect(Namespace.current.name).toEqual('some-namespace');
   });
 
-  it('resets namespace registry correctly', function () {
+  it('resets namespace registry correctly', () => {
     Namespace.reset();
-    Namespace.current.name.should.equal('user');
-    Namespace.all.should.have.key('user');
+    expect(Namespace.current.name).toEqual('user');
+    expect(Namespace.all).toHaveProperty('user');
   });
 
   it('can set and get from the namespace registry', function () {
     Namespace.reset();
-    Namespace.get('user').name.should.equal('user');
+    expect(Namespace.get('user').name).toEqual('user');
     Namespace.set('new-namespace');
-    Namespace.get('new-namespace').name.should.equal('new-namespace');
+    expect(Namespace.get('new-namespace').name).toEqual('new-namespace');
   });
 
   it('new namespace initialization', function () {
     const namespace = new Namespace('ns-init');
-    namespace.name.should.equal('ns-init');
-    namespace.vars.should.eql({});
+    expect(namespace.name).toEqual('ns-init');
+    expect(namespace.vars).toEqual({});
   });
 
   it('can set and get namespace symbols', function () {
     const namespace = new Namespace('get-set');
     namespace.set('a', 5);
-    namespace.get('a').should.equal(5);
+    expect(namespace.get('a')).toEqual(5);
   });
 
   it('can extend a namespace', function () {
@@ -41,13 +39,13 @@ describe('Namespace', function () {
     const ns2 = ns1.extend();
 
     // both have `a` defined
-    ns1.get('a').should.equal(5);
-    ns2.get('a').should.equal(5);
+    expect(ns1.get('a')).toEqual(5);
+    expect(ns2.get('a')).toEqual(5);
 
     // a new definition on the extended ns does not affect the first
     ns2.set('b', 3);
-    ns2.get('b').should.equal(3);
-    (typeof ns1.get('b')).should.equal('undefined');
+    expect(ns2.get('b')).toEqual(3);
+    expect(typeof ns1.get('b')).toEqual('undefined');
   });
 
   it('can use a namespace', function () {
@@ -57,10 +55,10 @@ describe('Namespace', function () {
     ns2.set('b', 3);
 
     // `a` is not yet defined
-    (typeof ns2.get('a')).should.equal('undefined');
+    expect(typeof ns2.get('a')).toEqual('undefined');
     // `a` is injected into `ns2`
     ns2.use(ns1);
-    ns2.get('a').should.equal(5);
-    ns2.get('b').should.equal(3);
+    expect(ns2.get('a')).toEqual(5);
+    expect(ns2.get('b')).toEqual(3);
   });
 });

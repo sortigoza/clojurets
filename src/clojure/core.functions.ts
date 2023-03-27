@@ -1,30 +1,23 @@
-import { forms } from '../forms';
 import { SpecialForms } from '../evaluator';
+import { forms } from '../forms';
 import { Namespace } from '../namespace';
 
-const literal = forms.literal;
+const { literal } = forms;
 
-export function partial() {
-  const func = arguments[0],
-    args = Array.prototype.slice.call(arguments, 1);
-  return function () {
+export function partial(func: Function, ...args: any[]) {
+  return function (this: any, ...rest: any[]) {
     const context = this;
+    const allArgs = [...args, ...rest];
 
-    return function () {
-      let result;
-      Array.prototype.map.call(arguments, function (a) {
-        args.push(a);
-      });
-      result = func.apply(context, args);
-      if (result === undefined || result === null) {
-        return literal(null);
-      }
-      return result;
-    }.apply(context, arguments);
+    const result = func.apply(context, allArgs);
+    if (result == null) {
+      return literal(null);
+    }
+    return result;
   };
 }
 
-export function defn(name, args, exprs) {
+export function defn(name: any, args: any, exprs: any) {
   Namespace.current.set(name.value, SpecialForms.fn({ value: ['', args, exprs] }, this));
 }
 

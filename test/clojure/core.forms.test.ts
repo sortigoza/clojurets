@@ -11,13 +11,13 @@ describe('Form', function () {
       ']', // closeChr
       false // terminal
     );
-    form.kind.should.equal('symbol');
-    form.namespace.should.equal('user');
-    form.value.should.equal(3);
-    form.openChr.should.equal('[');
-    form.closeChr.should.equal(']');
-    form.terminal.should.equal(false);
-    form.quoted.should.equal(false);
+    expect(form.kind).toEqual('symbol');
+    expect(form.namespace).toEqual('user');
+    expect(form.value).toEqual(3);
+    expect(form.openChr).toEqual('[');
+    expect(form.closeChr).toEqual(']');
+    expect(form.terminal).toEqual(false);
+    expect(form.quoted).toEqual(false);
   });
 
   it('converts to str a terminal form', function () {
@@ -30,7 +30,7 @@ describe('Form', function () {
       undefined // terminal
     );
 
-    form.toString().should.equal('"str-val"');
+    expect(form.toString()).toEqual('"str-val"');
   });
 
   it('converts to str a non-terminal form', function () {
@@ -58,7 +58,7 @@ describe('Form', function () {
       ']', // closeChr
       false // terminal
     );
-    form.toString().should.equal('[3 4]');
+    expect(form.toString()).toEqual('[3 4]');
   });
 });
 
@@ -68,12 +68,12 @@ describe('forms', function () {
     forms.number(3);
 
     // has a pattern defined
-    forms.number.pattern.should.not.be.undefined();
+    expect(forms.number.pattern).toBeDefined();
 
     // validate the pattern
     let ok_samples = ['1', "'2"];
     for (const sample of ok_samples) {
-      forms.number.pattern.exec(sample)[0].should.equal(sample);
+      expect(forms.number.pattern.exec(sample)[0]).toEqual(sample);
     }
   });
   it('has `string` form', function () {
@@ -81,12 +81,12 @@ describe('forms', function () {
     forms.string('hello world');
 
     // has a pattern defined
-    forms.string.pattern.should.not.be.undefined();
+    expect(forms.string.pattern).toBeDefined();
 
     // validate the pattern
     let ok_samples = ['"1', '"a string'];
     for (const sample of ok_samples) {
-      forms.string.pattern.exec(sample)[0].should.equal(sample);
+      expect(forms.string.pattern.exec(sample)[0]).toEqual(sample);
     }
   });
   it('has `literal` form', function () {
@@ -94,12 +94,12 @@ describe('forms', function () {
     forms.literal('true');
 
     // has a pattern defined
-    forms.literal.pattern.should.not.be.undefined();
+    expect(forms.literal.pattern).toBeDefined();
 
     // validate the pattern
     let ok_samples = ['true', 'false', 'nil'];
     for (const sample of ok_samples) {
-      forms.literal.pattern.exec(sample)[0].should.equal(sample);
+      expect(forms.literal.pattern.exec(sample)[0]).toEqual(sample);
     }
   });
   it('has `symbol` form', function () {
@@ -107,12 +107,12 @@ describe('forms', function () {
     forms.symbol('a');
 
     // has a pattern defined
-    forms.symbol.pattern.should.not.be.undefined();
+    expect(forms.symbol.pattern).toBeDefined();
 
     // validate the pattern
     let ok_samples = ['a', 'my_var', '+', '_x'];
     for (const sample of ok_samples) {
-      forms.symbol.pattern.exec(sample)[0].should.equal(sample);
+      expect(forms.symbol.pattern.exec(sample)[0]).toEqual(sample);
     }
   });
   it('has `keyword` form', function () {
@@ -120,12 +120,12 @@ describe('forms', function () {
     forms.keyword(':name');
 
     // has a pattern defined
-    forms.keyword.pattern.should.not.be.undefined();
+    expect(forms.keyword.pattern).toBeDefined();
 
     // validate the pattern
     let ok_samples = [':a', ':name', '::date'];
     for (const sample of ok_samples) {
-      forms.keyword.pattern.exec(sample)[0].should.equal(sample);
+      expect(forms.keyword.pattern.exec(sample)[0]).toEqual(sample);
     }
   });
   it('has `vector` form', function () {
@@ -133,12 +133,12 @@ describe('forms', function () {
     forms.vector('[1, 2]');
 
     // has a pattern defined
-    forms.vector.pattern.should.not.be.undefined();
+    expect(forms.vector.pattern).toBeDefined();
 
     // validate the pattern
     let ok_samples = ['[]', '[1 2]'];
     for (const sample of ok_samples) {
-      forms.vector.pattern.exec(sample)[0].should.equal('[');
+      expect(forms.vector.pattern.exec(sample)[0]).toEqual('[');
     }
   });
   it('has `call` form', function () {
@@ -146,12 +146,12 @@ describe('forms', function () {
     forms.call('(+ 1 2)');
 
     // has a pattern defined
-    forms.call.pattern.should.not.be.undefined();
+    expect(forms.call.pattern).toBeDefined();
 
     // validate the pattern
     let ok_samples = ['(+ 1 2)'];
     for (const sample of ok_samples) {
-      forms.call.pattern.exec(sample)[0].should.equal('(');
+      expect(forms.call.pattern.exec(sample)[0]).toEqual('(');
     }
   });
   it('has `list` form', function () {
@@ -159,12 +159,12 @@ describe('forms', function () {
     forms.list('(1 2)');
 
     // has a pattern defined
-    forms.list.pattern.should.not.be.undefined();
+    expect(forms.list.pattern).toBeDefined();
 
     // validate the pattern
     let ok_samples = ['(1 2)'];
     for (const sample of ok_samples) {
-      forms.list.pattern.exec(sample)[0].should.equal('(');
+      expect(forms.list.pattern.exec(sample)[0]).toEqual('(');
     }
   });
   it('has `comment` form', function () {
@@ -172,12 +172,12 @@ describe('forms', function () {
     forms.comment('; comment');
 
     // has a pattern defined
-    forms.comment.pattern.should.not.be.undefined();
+    expect(forms.comment.pattern).toBeDefined();
 
     // validate the pattern
     let ok_samples = ['; my-comment'];
     for (const sample of ok_samples) {
-      forms.comment.pattern.exec(sample)[0].should.equal(sample);
+      expect(forms.comment.pattern.exec(sample)[0]).toEqual(sample);
     }
   });
   it('has `hash_map` form', function () {
@@ -185,12 +185,12 @@ describe('forms', function () {
     forms.hash_map('{:a 1 :b 2}');
 
     // has a pattern defined
-    forms.hash_map.pattern.should.not.be.undefined();
+    expect(forms.hash_map.pattern).toBeDefined();
 
     // validate the pattern
     let ok_samples = ['{}', '{:a 1 :b 2}'];
     for (const sample of ok_samples) {
-      forms.hash_map.pattern.exec(sample)[0].should.equal('{');
+      expect(forms.hash_map.pattern.exec(sample)[0]).toEqual('{');
     }
   });
 });

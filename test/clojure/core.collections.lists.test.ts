@@ -7,23 +7,23 @@ var list = forms.list,
 describe('Collections', function () {
   describe('Lists', function () {
     it('first', function () {
-      clojure.run("(first '(1 2 3)").should.eql(number(1));
+      expect(clojure.run("(first '(1 2 3)")).toEqual(number(1));
     });
     it('second', function () {
-      clojure.run("(second '(1 2 3)").should.eql(number(2));
+      expect(clojure.run("(second '(1 2 3)")).toEqual(number(2));
     });
     it('nth', function () {
-      clojure.run("(nth '(0 1 2) 1").should.eql(number(1));
+      expect(clojure.run("(nth '(0 1 2) 1")).toEqual(number(1));
     });
     it('rest', function () {
       var expList = list(number(2), number(3));
       expList.quoted = true;
-      clojure.run("(rest '(1 2 3)").should.eql(expList);
+      expect(clojure.run("(rest '(1 2 3)")).toEqual(expList);
     });
     it('list', function () {
       var expList = list(number(1), number(2));
       expList.quoted = true;
-      clojure.run('(list 1 2)').should.eql(expList);
+      expect(clojure.run('(list 1 2)')).toEqual(expList);
     });
   });
 });
