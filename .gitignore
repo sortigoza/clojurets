@@ -9,3 +9,5 @@ src/namespace.js
 src/reader.js
 dist
 .pytest_cache
+.clj-kondo/
+.lsp/
