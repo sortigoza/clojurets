@@ -1,4 +1,3 @@
-import { evaluator } from '../evaluator';
 import { forms } from '../forms';
 
 function get(map, k) {

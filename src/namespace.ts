@@ -1,5 +1,4 @@
 import { events, EventType } from './events';
-import { logger } from './logger';
 
 export class Namespace {
   static all: Namespace[] = [];

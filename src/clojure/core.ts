@@ -1,4 +1,3 @@
-import { logger } from '../logger';
 import { Namespace } from '../namespace';
 import { maps } from './core.collections.hash_maps';
 import { collections } from './core.collections.lists';
