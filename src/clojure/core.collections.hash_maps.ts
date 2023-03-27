@@ -12,7 +12,7 @@ function get(map, k) {
 }
 
 function keys(map) {
-  let values = [];
+  const values = [];
   for (let index = 0; index < map.value.length; index = index + 2) {
     values.push(map.value[index]);
   }
@@ -20,7 +20,7 @@ function keys(map) {
 }
 
 function vals(map) {
-  let values = [];
+  const values = [];
   for (let index = 1; index < map.value.length; index = index + 2) {
     values.push(map.value[index]);
   }

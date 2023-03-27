@@ -14,7 +14,7 @@ function equals(...args: any[]): any {
     form = args[i];
     nextForm = args[i + 1];
 
-    let stringNumOrKeyword = function (form: any) {
+    const stringNumOrKeyword = function (form: any) {
       return form.kind === string.kind || form.kind === number.kind || form.kind === keyword.kind;
     };
     if (stringNumOrKeyword(form) || stringNumOrKeyword(nextForm)) {
