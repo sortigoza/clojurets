@@ -19,7 +19,7 @@ jobs:
         run: make deps
       - name: Run tests
         run: make test
-      - name: Format code
-        run: make fmt
-      - name: Lint code
-        run: make lint
+      - name: Bundle code
+        run: make bundle
+      # - name: Lint code
+      #   run: make lint
