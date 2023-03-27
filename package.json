@@ -22,9 +22,7 @@
     "eslint-plugin-literal-checker": "^1.0.0",
     "eslint-plugin-prettier": "^3.1.4",
     "jest": "^29.5.0",
-    "jest-sinon": "^1.1.0",
     "prettier": "^2.0.5",
-    "sinon": "15.0.1",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
     "tsify": "^5.0.4",
@@ -33,7 +31,6 @@
   },
   "scripts": {
     "jest": "jest --watch",
-    "test2": "./node_modules/mocha/bin/mocha.js test/*",
     "test": "jest",
     "build": "./node_modules/browserify/bin/cmd.js src/clojure -p tsify | ./node_modules/uglify-js/bin/uglifyjs -c > clojure.min.js",
     "fmt": "./node_modules/prettier/bin-prettier.js -w .",
