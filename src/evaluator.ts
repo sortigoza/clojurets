@@ -1,6 +1,6 @@
-import { Namespace } from './namespace';
-import { forms } from './forms';
 import { events, EventType } from './events';
+import { forms } from './forms';
+import { Namespace } from './namespace';
 
 const number = forms.number,
   string = forms.string,

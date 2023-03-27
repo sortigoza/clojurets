@@ -1,6 +1,5 @@
+import { evaluator, SpecialForms } from '../src/evaluator';
 import { forms } from '../src/forms';
-import { evaluator } from '../src/evaluator';
-import { SpecialForms } from '../src/evaluator';
 import { Namespace } from '../src/namespace';
 
 const number = forms.number,

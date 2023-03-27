@@ -1,5 +1,5 @@
-import { Reader } from '../src/reader';
 import { forms } from '../src/forms';
+import { Reader } from '../src/reader';
 
 const reader = new Reader(),
   number = forms.number,

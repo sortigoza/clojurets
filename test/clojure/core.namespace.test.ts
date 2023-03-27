@@ -1,5 +1,5 @@
-import { Namespace } from '../../src/namespace';
 import { clojure } from '../../src/clojure';
+import { Namespace } from '../../src/namespace';
 
 describe('Namespace', function () {
   it('ns', function () {

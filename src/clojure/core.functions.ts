@@ -1,5 +1,5 @@
-import { forms } from '../forms';
 import { SpecialForms } from '../evaluator';
+import { forms } from '../forms';
 import { Namespace } from '../namespace';
 
 const literal = forms.literal;

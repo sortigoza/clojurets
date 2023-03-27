@@ -1,15 +1,15 @@
 import { logger } from '../logger';
 import { Namespace } from '../namespace';
+import { maps } from './core.collections.hash_maps';
 import { collections } from './core.collections.lists';
-import { arithmetic } from './core.primitives.numbers.arithmetic';
 import * as functions from './core.functions';
 import * as coreIO from './core.io';
 import * as macros from './core.macros';
-import { namespace } from './core.namespace';
-import * as sequences from './core.sequences';
-import { numbers_test } from './core.primitives.numbers.checks';
 import { misc } from './core.misc';
-import { maps } from './core.collections.hash_maps';
+import { namespace } from './core.namespace';
+import { arithmetic } from './core.primitives.numbers.arithmetic';
+import { numbers_test } from './core.primitives.numbers.checks';
+import * as sequences from './core.sequences';
 
 const core_namespace_name = 'clojure.core';
 const core = new Namespace(core_namespace_name);
