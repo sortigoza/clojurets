@@ -1,6 +1,6 @@
-import { evaluator, SpecialForms } from '../src/evaluator';
-import { forms } from '../src/forms';
-import { Namespace } from '../src/namespace';
+import { evaluator, SpecialForms } from './evaluator';
+import { forms } from './forms';
+import { Namespace } from './namespace';
 
 const number = forms.number,
   string = forms.string,

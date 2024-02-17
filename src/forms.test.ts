@@ -1,5 +1,5 @@
-import { Form } from '../../src/form';
-import { forms } from '../../src/forms';
+import { Form } from './form';
+import { forms } from './forms';
 
 describe('Form', function () {
   it('new form initialization', function () {

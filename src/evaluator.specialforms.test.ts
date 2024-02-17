@@ -1,6 +1,6 @@
-import { clojure } from '../../src/clojure';
-import { forms } from '../../src/forms';
-import { Namespace } from '../../src/namespace';
+import { clojure } from './clojure';
+import { forms } from './forms';
+import { Namespace } from './namespace';
 
 var number = forms.number,
   literal = forms.literal;
