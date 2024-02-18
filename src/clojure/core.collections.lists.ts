@@ -1,10 +1,11 @@
 import { Evaluator } from '../evaluator';
 import { forms } from '../forms';
+import { NamespaceRegistry } from '../namespace_registry';
 
 export class CoreCollectionsLists {
   private evaluator: Evaluator;
 
-  constructor(evaluator: Evaluator) {
+  constructor(evaluator: Evaluator, namespaceRegistry: NamespaceRegistry) {
     this.evaluator = evaluator;
   }
 

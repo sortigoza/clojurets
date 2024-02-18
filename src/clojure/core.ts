@@ -38,7 +38,7 @@ export class CoreNamespaceFactory {
     }
 
     // Based on http://clojure.org/cheatsheet
-    use(new CoreCollectionsLists(this.evaluator).functions());
+    use(new CoreCollectionsLists(this.evaluator, this.namespaceRegistry).functions());
     use(arithmetic);
     use(numbers_test);
     use(new CoreFunctions(this.evaluator, this.namespaceRegistry).functions());
