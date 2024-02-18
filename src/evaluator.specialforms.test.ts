@@ -1,25 +1,24 @@
-import { clojure } from '../../src/clojure';
-import { forms } from '../../src/forms';
-import { Namespace } from '../../src/namespace';
+import { clojure } from './clojure';
+import { forms } from './forms';
 
 var number = forms.number,
   literal = forms.literal;
 
 describe('Special Forms', function () {
   beforeEach(function () {
-    Namespace.reset();
+    clojure.namespaceRegistry.reset();
   });
 
   describe('def', function () {
     it('should define var with null value by default', function () {
       clojure.run('(def a)');
 
-      expect(Namespace.current.get('a')).toEqual(literal(null));
+      expect(clojure.namespaceRegistry.getCurrent().get('a')).toEqual(literal(null));
     });
     it('should define var with given value', function () {
       clojure.run('(def a 5)');
 
-      expect(Namespace.current.get('a')).toEqual(number(5));
+      expect(clojure.namespaceRegistry.getCurrent().get('a')).toEqual(number(5));
     });
   });
 
@@ -40,7 +39,7 @@ describe('Special Forms', function () {
 
   describe('let', function () {
     it('should apply bindings to inner context', function () {
-      Namespace.current.set('x', number(1));
+      clojure.namespaceRegistry.getCurrent().set('x', number(1));
       expect(clojure.run('(let [x 2] x)')).toEqual(number(2));
       expect(clojure.run('x')).toEqual(number(1));
     });

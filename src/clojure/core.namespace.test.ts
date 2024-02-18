@@ -1,24 +1,24 @@
-import { clojure } from '../../src/clojure';
-import { Namespace } from '../../src/namespace';
+import { clojure } from '../clojure';
+import { Namespace } from '../namespace';
 
 describe('Namespace', function () {
   it('ns', function () {
     clojure.run('(ns some-namespace)');
 
-    expect(Namespace.current.name).toEqual('some-namespace');
+    expect(clojure.namespaceRegistry.getCurrent().name).toEqual('some-namespace');
   });
 
   it('resets namespace registry correctly', () => {
-    Namespace.reset();
-    expect(Namespace.current.name).toEqual('user');
-    expect(Namespace.all).toHaveProperty('user');
+    clojure.namespaceRegistry.reset();
+    expect(clojure.namespaceRegistry.getCurrent().name).toEqual('user');
+    expect(clojure.namespaceRegistry.all).toHaveProperty('user');
   });
 
   it('can set and get from the namespace registry', function () {
-    Namespace.reset();
-    expect(Namespace.get('user').name).toEqual('user');
-    Namespace.set('new-namespace');
-    expect(Namespace.get('new-namespace').name).toEqual('new-namespace');
+    clojure.namespaceRegistry.reset();
+    expect(clojure.namespaceRegistry.get('user').name).toEqual('user');
+    clojure.namespaceRegistry.set('new-namespace');
+    expect(clojure.namespaceRegistry.get('new-namespace').name).toEqual('new-namespace');
   });
 
   it('new namespace initialization', function () {

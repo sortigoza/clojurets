@@ -1,6 +1,5 @@
 'use strict';
 import { clojure } from './clojure';
-import { Namespace } from './namespace';
 
 const rl = require('readline').createInterface({
   input: process.stdin,
@@ -54,13 +53,13 @@ function readEvalPrompt(input) {
 }
 
 function prompt() {
-  const prefix = Namespace.current.name + '=> ';
+  const prefix = clojure.namespaceRegistry.getCurrent().name + '=> ';
   rl.setPrompt(prefix, prefix.length);
   rl.prompt();
 }
 
 function promptMoreInput() {
-  const prefix = Namespace.current.name + '+> ';
+  const prefix = clojure.namespaceRegistry.getCurrent().name + '+> ';
   rl.setPrompt(prefix, prefix.length);
   rl.prompt();
 }

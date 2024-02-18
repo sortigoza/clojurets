@@ -12,6 +12,8 @@ fmt:
 lint:
 	npm run lint
 
+validate: fmt lint test
+
 autotest:
 	make test OPTS=-w
 

@@ -1,9 +1,12 @@
-import { evaluator } from './evaluator';
+import { Evaluator } from './evaluator';
 import { events, EventType } from './events';
-import { Namespace } from './namespace';
+import { NamespaceRegistry } from './namespace_registry';
 import { Reader } from './reader';
 
 const reader = new Reader();
+const namespaceRegistry = new NamespaceRegistry();
+const evaluator = new Evaluator(namespaceRegistry);
+namespaceRegistry.initialize(evaluator);
 
 function run(str) {
   const data = reader.read(str);
@@ -18,7 +21,7 @@ function run(str) {
 export const clojure = {
   run,
   events,
-  namespace: Namespace,
+  namespaceRegistry: namespaceRegistry,
 };
 
 // when running in the browser attach the clojure obj to the window

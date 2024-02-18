@@ -1,5 +1,5 @@
-import { clojure } from '../../src/clojure';
-import { forms } from '../../src/forms';
+import { clojure } from '../clojure';
+import { forms } from '../forms';
 
 var list = forms.list,
   number = forms.number;

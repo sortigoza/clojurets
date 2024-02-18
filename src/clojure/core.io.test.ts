@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { clojure } from '../../src/clojure';
-import { forms } from '../../src/forms';
+import { clojure } from '../clojure';
+import { forms } from '../forms';
 
 var number = forms.number,
   string = forms.string;

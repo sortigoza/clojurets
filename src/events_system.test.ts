@@ -1,4 +1,4 @@
-import { events, EventType } from '../src/events';
+import { events, EventType } from './events';
 
 describe('EventsSystem', function () {
   test('can subscribe and unsubscribe to events', function () {

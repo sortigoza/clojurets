@@ -1,6 +1,6 @@
 import { events, EventType } from './events';
 import { forms } from './forms';
-import { Namespace } from './namespace';
+import { NamespaceRegistry } from './namespace_registry';
 
 const number = forms.number,
   string = forms.string,
@@ -12,23 +12,29 @@ const number = forms.number,
   call = forms.call,
   MAX_ITERATIONS = 1000;
 
-class Evaluator {
+export class Evaluator {
+  private namespaceRegistry: NamespaceRegistry;
+
+  constructor(namespaceRegistry: NamespaceRegistry) {
+    this.namespaceRegistry = namespaceRegistry;
+  }
+
   evaluate(exprs, context?) {
-    context = context || Namespace.current;
+    context = context || this.namespaceRegistry.getCurrent();
 
     let result;
     for (const expr of exprs) {
-      result = evaluateExpression(expr, context);
+      result = evaluateExpression(expr, context, this.namespaceRegistry);
     }
 
     return result === undefined ? literal(null) : result;
   }
 }
 
-function instrumentEvents(fn, form, context) {
+function instrumentEvents(fn, form, context, namespaceRegistry) {
   try {
     events.publish(EventType.BEGIN_EVALUATE_EXPRESSION, { form, context });
-    const result = fn(form, context);
+    const result = fn(form, context, namespaceRegistry);
     events.publish(EventType.FINISH_EVALUATE_EXPRESSION, { form, context, result });
     return result;
   } catch (e) {
@@ -37,11 +43,11 @@ function instrumentEvents(fn, form, context) {
   }
 }
 
-function evaluateExpression(form, context) {
-  return instrumentEvents(_evaluateExpression, form, context);
+function evaluateExpression(form, context, namespaceRegistry) {
+  return instrumentEvents(_evaluateExpression, form, context, namespaceRegistry);
 }
 
-function _evaluateExpression(form, context) {
+function _evaluateExpression(form, context, namespaceRegistry) {
   let should_continue,
     count = 0;
   while (true) {
@@ -53,43 +59,43 @@ function _evaluateExpression(form, context) {
       case literal.kind:
         return literal(lookupLiteral(form.value));
       case symbol.kind:
-        return lookupSymbol(form.value, form.namespace, context);
+        return lookupSymbol(form.value, form.namespace, context, namespaceRegistry);
       case vector.kind:
         return vector.apply(
           forms,
           form.value.map(function (e) {
-            return evaluateExpression(e, context);
+            return evaluateExpression(e, context, namespaceRegistry);
           })
         );
       case hash_map.kind:
         return hash_map.apply(
           forms,
           form.value.map(function (e) {
-            return evaluateExpression(e, context);
+            return evaluateExpression(e, context, namespaceRegistry);
           })
         );
       case call.kind:
         // handle special forms
         switch (form.value[0].value) {
           case 'if':
-            form = SpecialForms.tailCallIf(form, context);
+            form = SpecialForms.tailCallIf(form, context, namespaceRegistry);
             continue;
           case 'cond':
-            form = SpecialForms.tailCallCond(form, context);
+            form = SpecialForms.tailCallCond(form, context, namespaceRegistry);
             continue;
           case 'fn':
             return SpecialForms.fn(form, context);
           case 'def':
-            return SpecialForms.def(form, context);
+            return SpecialForms.def(form, context, namespaceRegistry);
           case 'let':
-            return SpecialForms.let(form, context.extend());
+            return SpecialForms.let(form, context.extend(), namespaceRegistry);
           case 'throw':
-            return SpecialForms.throw(form, context);
+            return SpecialForms.throw(form, context, namespaceRegistry);
           case 'try':
-            return SpecialForms.try(form, context);
+            return SpecialForms.try(form, context, namespaceRegistry);
         }
 
-        [form, should_continue, context] = evaluateCall(form, context.extend());
+        [form, should_continue, context] = evaluateCall(form, context.extend(), namespaceRegistry);
         // prevent it to be stuck in an infinite loop
         if (should_continue && count < MAX_ITERATIONS) {
           count++;
@@ -110,8 +116,8 @@ function _evaluateExpression(form, context) {
 export class SpecialForms {
   // Eliminate the tail call of the if branches by "continuing the interpret loop"
   // with the branch set as the current expression
-  static tailCallIf(form, context) {
-    const predicate = evaluateExpression(form.value[1], context);
+  static tailCallIf(form, context, namespaceRegistry) {
+    const predicate = evaluateExpression(form.value[1], context, namespaceRegistry);
     if (predicate.value !== null && predicate.value !== false) {
       return form.value[2];
     } else {
@@ -121,12 +127,12 @@ export class SpecialForms {
 
   // Eliminate the tail call of the if branches by "continuing the interpret loop"
   // with the branch set as the current expression
-  static tailCallCond(form, context) {
+  static tailCallCond(form, context, namespaceRegistry) {
     let predicate,
       exprs = form.value.slice(1);
 
     for (let i = 0; i < exprs.length; i = i + 2) {
-      predicate = evaluateExpression(exprs[i], context);
+      predicate = evaluateExpression(exprs[i], context, namespaceRegistry);
       if (predicate.value !== null && predicate.value !== false) {
         return exprs[i + 1];
       }
@@ -147,15 +153,18 @@ export class SpecialForms {
     };
   }
 
-  static def(form, context) {
+  static def(form, context, namespaceRegistry) {
     const name = form.value[1],
       init = form.value[2];
 
-    const value = typeof init === 'undefined' ? literal(null) : evaluateExpression(init, context);
-    Namespace.current.set(name.value, value);
+    const value =
+      typeof init === 'undefined'
+        ? literal(null)
+        : evaluateExpression(init, context, namespaceRegistry);
+    namespaceRegistry.getCurrent().set(name.value, value);
   }
 
-  static let(form, context) {
+  static let(form, context, namespaceRegistry) {
     const bindings = form.value[1],
       exprs = form.value[2];
     let i, param, value;
@@ -166,44 +175,44 @@ export class SpecialForms {
 
     for (i = 0; i < bindings.value.length; i += 2) {
       param = bindings.value[i].value;
-      value = evaluateExpression(bindings.value[i + 1], context);
+      value = evaluateExpression(bindings.value[i + 1], context, namespaceRegistry);
 
       context.set(param, value);
     }
 
-    return evaluateExpression(exprs, context);
+    return evaluateExpression(exprs, context, namespaceRegistry);
   }
 
-  static throw(form, context) {
+  static throw(form, context, namespaceRegistry) {
     const exprs = form.value[1];
-    throw new Error(evaluateExpression(exprs, context));
+    throw new Error(evaluateExpression(exprs, context, namespaceRegistry));
   }
 
-  static try(form, context) {
+  static try(form, context, namespaceRegistry) {
     const exprs = form.value[1],
       catchClause = form.value[2],
       finallyClause = form.value[3];
     try {
-      return evaluateExpression(exprs, context);
+      return evaluateExpression(exprs, context, namespaceRegistry);
     } catch (error) {
       // will not distinguish between different exceptions
-      return evaluateExpression(catchClause, context);
+      return evaluateExpression(catchClause, context, namespaceRegistry);
     } finally {
       // any finally-clause exprs will be evaluated for their side effects
       if (finallyClause !== undefined) {
-        evaluateExpression(finallyClause, context);
+        evaluateExpression(finallyClause, context, namespaceRegistry);
       }
     }
   }
 }
 
-function evaluateCall(form, context) {
-  let func = evaluateExpression(form.value[0], context),
+function evaluateCall(form, context, namespaceRegistry) {
+  let func = evaluateExpression(form.value[0], context, namespaceRegistry),
     args = form.value.slice(1);
 
   if (!func.macro) {
     args = args.map(function (arg) {
-      return evaluateExpression(arg, context);
+      return evaluateExpression(arg, context, namespaceRegistry);
     });
   }
 
@@ -251,7 +260,7 @@ function lookupLiteral(name) {
   if (name === 'nil') return null;
 }
 
-function lookupSymbol(name, namespace, context) {
+function lookupSymbol(name, namespace, context, namespaceRegistry) {
   const lookups = [
     lookupQualifiedSymbol,
     lookupSpecialForm,
@@ -264,22 +273,22 @@ function lookupSymbol(name, namespace, context) {
 
   // use the first lookup match returning a valid value
   lookups.find(function (lookup) {
-    return (symbol = lookup.call(this, name, namespace, context)) !== undefined;
+    return (symbol = lookup.call(this, name, namespace, context, namespaceRegistry)) !== undefined;
   });
 
   return symbol;
 }
 
-function lookupQualifiedSymbol(name, namespace) {
+function lookupQualifiedSymbol(name, namespace, context, namespaceRegistry) {
   if (namespace === undefined) {
     return;
   }
 
-  if (Namespace.get(namespace) === undefined) {
+  if (namespaceRegistry.get(namespace) === undefined) {
     throw new Error('No such namespace: ' + namespace);
   }
 
-  return Namespace.get(namespace).get(name);
+  return namespaceRegistry.get(namespace).get(name);
 }
 
 function lookupSpecialForm(name, namespace) {
@@ -346,6 +355,3 @@ Array.prototype.find =
       }
     }
   };
-
-const evaluator = new Evaluator();
-export { evaluator };

@@ -1,6 +1,6 @@
-import { evaluator, SpecialForms } from '../src/evaluator';
-import { forms } from '../src/forms';
-import { Namespace } from '../src/namespace';
+import { Evaluator, SpecialForms } from './evaluator';
+import { forms } from './forms';
+import { NamespaceRegistry } from './namespace_registry';
 
 const number = forms.number,
   string = forms.string,
@@ -12,9 +12,13 @@ const number = forms.number,
   list = forms.list,
   call = forms.call;
 
+const namespaceRegistry = new NamespaceRegistry();
+const evaluator = new Evaluator(namespaceRegistry);
+namespaceRegistry.initialize(evaluator);
+
 describe('Evaluator', function () {
   beforeEach(function () {
-    Namespace.reset();
+    namespaceRegistry.reset();
   });
 
   it('should evaluate numbers', function () {
@@ -46,74 +50,81 @@ describe('Evaluator', function () {
 
   describe('symbol evaluation', function () {
     test('should evaluate qualified symbols in current namespace', () => {
-      Namespace.current.set('a', number(1));
-      const result = evaluator.evaluate([symbol('user', 'a')], Namespace.current);
+      namespaceRegistry.getCurrent().set('a', number(1));
+      expect(namespaceRegistry.getCurrent().name).toEqual('user');
+      const result = evaluator.evaluate([symbol('user', 'a')], namespaceRegistry.getCurrent());
       expect(result).toEqual(number(1));
     });
 
     test('should evaluate qualified symbols in other namespace', () => {
-      Namespace.current.set('a', number(1));
-      Namespace.set('other');
-      const result = evaluator.evaluate([symbol('user', 'a')], Namespace.current);
+      namespaceRegistry.getCurrent().set('a', number(1));
+      namespaceRegistry.set('other');
+      const result = evaluator.evaluate([symbol('user', 'a')], namespaceRegistry.getCurrent());
       expect(result).toEqual(number(1));
     });
 
     test('should let special forms take precedence over vars', () => {
-      Namespace.current.set('def', number(1));
-      const result = evaluator.evaluate([symbol('def')], Namespace.current);
+      namespaceRegistry.getCurrent().set('def', number(1));
+      const result = evaluator.evaluate([symbol('def')], namespaceRegistry.getCurrent());
       expect(result).toEqual(SpecialForms.def);
     });
 
     test('should evaluate qualified special form-named vars', () => {
-      Namespace.current.set('def', number(1));
-      const result = evaluator.evaluate([symbol('user', 'def')], Namespace.current);
+      namespaceRegistry.getCurrent().set('def', number(1));
+      const result = evaluator.evaluate([symbol('user', 'def')], namespaceRegistry.getCurrent());
       expect(result).toEqual(number(1));
     });
 
     test('should not evaluate undefined, qualified special form-named vars', () => {
       expect(() => {
-        evaluator.evaluate([symbol('user', 'def')], Namespace.current);
+        evaluator.evaluate([symbol('user', 'def')], namespaceRegistry.getCurrent());
       }).toThrow(/No such var: user\/def/);
     });
 
     test('should evaluate vars in current namespace', () => {
-      Namespace.current.set('a', number(1));
-      const result = evaluator.evaluate([symbol('a')], Namespace.current);
+      namespaceRegistry.getCurrent().set('a', number(1));
+      const result = evaluator.evaluate([symbol('a')], namespaceRegistry.getCurrent());
       expect(result).toEqual(number(1));
     });
 
     test('should evaluate vars in context extending namespace', () => {
-      Namespace.current.set('a', number(1));
-      const extendedNamespace = Namespace.current.extend();
+      namespaceRegistry.getCurrent().set('a', number(1));
+      const extendedNamespace = namespaceRegistry.getCurrent().extend();
       const result = evaluator.evaluate([symbol('a')], extendedNamespace);
       expect(result).toEqual(number(1));
     });
 
     test('should throw error when symbol cannot be resolved', () => {
       expect(() => {
-        evaluator.evaluate([symbol('a')], Namespace.current);
+        evaluator.evaluate([symbol('a')], namespaceRegistry.getCurrent());
       }).toThrow(/Unable to resolve symbol: a in this context/);
     });
   });
 
   describe('call evaluation', () => {
     test('should evaluate calls', () => {
-      Namespace.current.set('f', () => 42);
-      const result = evaluator.evaluate([call(symbol('f'))], Namespace.current);
+      namespaceRegistry.getCurrent().set('f', () => 42);
+      const result = evaluator.evaluate([call(symbol('f'))], namespaceRegistry.getCurrent());
       expect(result).toEqual(42);
     });
   });
 
   describe('vector evaluation', () => {
     test('should evaluate vectors', () => {
-      const result = evaluator.evaluate([vector(number(1), number(2))], Namespace.current);
+      const result = evaluator.evaluate(
+        [vector(number(1), number(2))],
+        namespaceRegistry.getCurrent()
+      );
       expect(result).toEqual(vector(number(1), number(2)));
     });
   });
 
   describe('hash_map evaluation', () => {
     test('should evaluate hash_maps', () => {
-      const result = evaluator.evaluate([hash_map(keyword('a'), number(2))], Namespace.current);
+      const result = evaluator.evaluate(
+        [hash_map(keyword('a'), number(2))],
+        namespaceRegistry.getCurrent()
+      );
       expect(result).toEqual(hash_map(keyword('a'), number(2)));
     });
   });
@@ -122,7 +133,7 @@ describe('Evaluator', function () {
     test('should not eval quoted lists', () => {
       const quotedList = list(number('1'));
       quotedList.quoted = true;
-      const result = evaluator.evaluate([quotedList], Namespace.current);
+      const result = evaluator.evaluate([quotedList], namespaceRegistry.getCurrent());
       expect(result).toEqual(quotedList);
     });
   });
@@ -130,14 +141,17 @@ describe('Evaluator', function () {
   describe('special forms evaluation', () => {
     test('should throw error when thow call is evaluated', () => {
       expect(() => {
-        evaluator.evaluate([call(symbol('throw'), string('Test-error'))], Namespace.current);
+        evaluator.evaluate(
+          [call(symbol('throw'), string('Test-error'))],
+          namespaceRegistry.getCurrent()
+        );
       }).toThrow(/Test-error/);
     });
 
     test('should return expr result if no error when using try', () => {
       const result = evaluator.evaluate(
         [call(symbol('try'), number(1), number(2))],
-        Namespace.current
+        namespaceRegistry.getCurrent()
       );
       expect(result).toEqual(number(1));
     });
@@ -145,7 +159,7 @@ describe('Evaluator', function () {
     test('should return catchClause result if error when using try', () => {
       const result = evaluator.evaluate(
         [call(symbol('try'), call(symbol('throw'), string('Test-error')), number(2))],
-        Namespace.current
+        namespaceRegistry.getCurrent()
       );
       expect(result).toEqual(number(2));
     });
