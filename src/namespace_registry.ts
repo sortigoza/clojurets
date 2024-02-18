@@ -45,6 +45,7 @@ export class NamespaceRegistry {
     return this.current;
   }
 
+  // NOTE: This method is not used in the codebase
   setCurrent(namespace: Namespace): void {
     this.current = namespace;
   }
