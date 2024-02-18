@@ -1,6 +1,6 @@
 # clojurets
 
-**Aknowlegements:** This code was based on the https://github.com/gnab/clojurejs repo by @gnab.
+**Aknowlegements:** This code was based on the https://github.com/gnab/clojurets repo by @gnab.
 
 A simplistic Clojure interpreter written in TypeScript, for running Clojure in the browser or in node.
 
