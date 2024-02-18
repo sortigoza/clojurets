@@ -1,3 +1,4 @@
+'use strict';
 import { Evaluator } from '../evaluator';
 import { Namespace } from '../namespace';
 import { NamespaceRegistry } from '../namespace_registry';
