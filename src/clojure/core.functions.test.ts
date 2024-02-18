@@ -1,13 +1,12 @@
 import { clojure } from '../clojure';
 import { forms } from '../forms';
-import { Namespace } from '../namespace';
 
 const literal = forms.literal,
   number = forms.number;
 
 describe('Functions', function () {
   beforeEach(function () {
-    Namespace.reset();
+    clojure.namespaceRegistry.reset();
   });
 
   it('partial', function () {

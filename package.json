@@ -16,7 +16,6 @@
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
     "babel-jest": "^29.5.0",
-    "browserify": "17.0.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-literal-checker": "^1.0.0",
@@ -26,14 +25,13 @@
     "prettier-plugin-organize-imports": "^3.2.2",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
-    "tsify": "^5.0.4",
-    "typescript": "^4.9.5",
-    "uglify-js": "3.17.4"
+    "tsup": "^8.0.2",
+    "typescript": "^4.9.5"
   },
   "scripts": {
-    "jest": "jest --watch",
-    "test": "jest",
-    "build": "./node_modules/browserify/bin/cmd.js src/clojure -p tsify | ./node_modules/uglify-js/bin/uglifyjs -c > clojure.min.js",
+    "jest": "./node_modules/jest/bin/jest.js --watch",
+    "test": "./node_modules/jest/bin/jest.js",
+    "build": "./node_modules/tsup/dist/cli-node.js src/clojure.ts --format iife,esm --target esnext",
     "fmt": "./node_modules/prettier/bin-prettier.js -w .",
     "lint": "./node_modules/eslint/bin/eslint.js src"
   },
