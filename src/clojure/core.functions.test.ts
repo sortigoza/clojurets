@@ -13,6 +13,10 @@ describe('Functions', function () {
     expect(clojure.run('((partial + 2) 3)')).toEqual(number(5));
   });
 
+  it('partial returns nil', function () {
+    expect(clojure.run('((partial println) nil)')).toEqual(literal(null));
+  });
+
   describe('defn', function () {
     it('should define function', function () {
       clojure.run('(defn testfun [a b] (+ a b))');

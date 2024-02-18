@@ -2,7 +2,7 @@ export {};
 
 declare global {
   interface Window {
-    clojurejs: any;
+    clojurets: any;
     apply: any;
   }
 }

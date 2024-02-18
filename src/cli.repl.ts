@@ -6,7 +6,7 @@ const rl = require('readline').createInterface({
   output: process.stdout,
 });
 
-console.log('Welcome to the clojurejs REPL! Type (quit) to quit');
+console.log('Welcome to the clojurets REPL! Type (quit) to quit');
 
 rl.on('line', readEvalPrompt);
 
